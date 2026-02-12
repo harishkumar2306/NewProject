@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example.moviebooking</groupId>
+  <artifactId>movie-booking-site</artifactId>
+  <version>1.0.0</version>
+  <name>Movie Booking Static Site</name>
+
+  <!-- We’re building a WAR so you can drop it into any servlet container (Tomcat/Jetty).
+       No Java code needed; this simply bundles your static files. -->
+  <packaging>war</packaging>
+
+  <properties>
+    <!-- Keep builds reproducible -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.war.plugin.version>3.4.0</maven.war.plugin.version>
+  </properties>
+
+  <build>
+    <finalName>movie-booking-site</finalName>
+
+    <plugins>
+      <!-- Package static files under src/main/webapp into a WAR.
+           failOnMissingWebXml=false avoids requiring a web.xml for modern servlet containers. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>${maven.war.plugin.version}</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <!-- Optional: exclude any stray files -->
+          <packagingExcludes>**/*.md</packagingExcludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- Optional: Profile to produce a ZIP of the static site (besides the WAR). -->
+  <profiles>
+    <profile>
+      <id>zip-dist</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.6.0</version>
+            <configuration>
+              <descriptors>
+                <!-- Create a zip from src/main/webapp content -->
+              </descriptors>
+              <finalName>${project.artifactId}-${project.version}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+              <formats>
+                <format>zip</format>
+              </formats>
+              <includeSiteDirectory>false</includeSiteDirectory>
+              <tarLongFileMode>posix</tarLongFileMode>
+              <filters/>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.basedir}/src/main/webapp</directory>
+                  <outputDirectory>/</outputDirectory>
+                </fileSet>
+              </fileSets>
+            </configuration>
+            <executions>
+              <execution>
+                <id>make-zip</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
